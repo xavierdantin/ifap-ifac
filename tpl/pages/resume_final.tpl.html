@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+		<title>Création d'un stagiaire</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<link rel="stylesheet" href="../css/global.css"/>
+		<link rel="stylesheet" href="../css/forms.css"/>
+		<link rel="stylesheet" href="../css/projetGestionFAP.css"/>
+		<link rel="stylesheet" href="../css/content-boxes.css"/>
+		<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+		<script type="text/javascript" src="../js/box-0.7.0.js"></script>
+		<script type="text/javascript" src="../js/l10n.js"></script>
+		<script type="text/javascript" src="../js/global-forms.js"></script>
+		<script type="text/javascript" src="../js/global-content-boxes.js"></script>
+		<script type="text/javascript" src="../js/jquery.min.js"></script>
+		<script type="text/javascript" src="../js/jquery-ui.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="../css/jquery-ui.css"/>
+
+		<style type="text/css">
+			table {
+			    border-collapse: collapse;
+			}
+
+			table, th, td {
+			    border: 1px solid black;
+			}
+		</style>
+	</head>
+	<body>	
+		 <!-- Page de création stagiaire -->
+
+		<div class="two-columns forms">
+			<div class="element">
+				<div class="form-standard">
+					<div class="push-shadow bright-blue">
+						<div class="box-content">
+							<div class="element">
+								<div class="form-standard">
+									<div class="box-form-content">
+
+									<?php 
+									$laststage = "";
+									$lastfonction = "";
+									$lastobj = "";
+									$nbrremarques = 0;
+									$nbrFonction = 0;
+									$nbrObjectif = 0;
+
+									foreach ($faps as $fap) {
+										if ($laststage != $fap->titre){
+											$nbrFonction= 0;
+
+										if ($nbrFonction == 0){
+											echo addPasDeRamarque($nbrremarques);
+										}
+									?>
+									<h1 style="margin-top: 0px;"><?=$fap->titre?></h1>
+
+									<?php
+										$laststage = $fap->titre;
+										$lastfonction = "";
+										$lastobj = "";
+									}
+									if ($lastfonction != $fap->idFonction){
+										if ($nbrFonction >= 1){
+											echo addPasDeRamarque($nbrremarques);
+										}
+
+										$nbrFonction++;
+									?>
+
+									<h3 style="padding-left: 20px;margin-top: 0px;"><?=$fap->nomFonction?></h3>
+
+									<?php
+									$lastfonction = $fap->idFonction;
+									$nbrObjectif = 0;
+									}
+									$àremplacer=array("\n","Ã ", "Ã¨","Ã©");
+									$remplacant=array("</br>","&agrave;","&egrave;","&eacute;");
+									$pf = utf8_decode(str_replace($àremplacer,$remplacant,utf8_encode($fap->pointFort)));
+									$pa = utf8_decode(str_replace($àremplacer,$remplacant,utf8_encode($fap->pointAAmeliorer)));
+
+									if ($lastobj != $fap->nomObjectif){
+										if ($nbrObjectif >= 1){
+											echo addPasDeRamarque($nbrremarques);
+										}
+										$nbrremarques = 0;
+									?>
+
+									<h4><?=$fap->nomObjectif?></h4>
+
+									<?php
+									$lastobj = $fap->nomObjectif;
+									}
+									$nbrObjectif++;
+									if ($pf == "Pas de remarques particulières" && $pa == "Pas de remarques particulières"){
+										$nbrremarques++;
+										continue;
+									}
+									// if ($pf != "Pas de remarques particulières" && $pa != "Pas de remarques particulières"){
+									?>
+
+									<table style="width: 100%; border-collapse: collapse;">
+										<tr>
+											<td style="width: 50%;" bgcolor="#AAFFAA"><?=$pf?></td>
+											<td style="width: 50%;" bgcolor="#FFAAAA"><?=$pa?></td>
+										</tr>
+									</table>
+									<?php
+									
+									//}
+									}		
+
+									function addPasDeRamarque($nbr){
+										if ($nbr > 0){
+											return "<table style=\"width: 100%; border-collapse: collapse;\"><tr><td style=\"width: 50%;\" bgcolor=\"#AAFFAA\">Pas de remarques particulières ($nbr)</td><td style=\"width: 50%;\" bgcolor=\"#FFAAAA\">Pas de remarques particulières ($nbr)</td></tr></table>";
+										}
+									}					
+									
+									/*foreach ($faps as $fap) {
+										$stage = new Stage($fap->idStage);
+										$fonction = new Fonction($fap->idFonction);
+
+										if ($laststage != $stage->_id){
+										?>
+
+										<h1 style="margin-top: 0px;"><?=$stage->_titre?></h1>
+										<?php 
+											$laststage = $stage->_id;
+										} 
+
+										if ($lastfonction != $fonction->_id){
+										?>
+
+										<h3 style="padding-left: 20px;margin-top: 0px;"><?=$fonction->_nom?></h3>
+
+										
+
+										<table style="width: 100%;">
+											<thead>
+												<th width="33%">Objectif</th>
+												<th width="33%">Point Fort</th>
+												<th width="33%">Point a Améliorer</th>
+											</thead>
+
+											<tbody id="tableau<?=$stage->_id.'_'.$fonction->_id?>">
+												
+											</tbody>
+										</table>
+										<?php 
+										} 
+										$lastfonction = $fonction->_id;
+
+
+										$pf = utf8_decode(str_replace("Ã ", "&agrave;",utf8_encode($fap->pointFort)));
+										$pa = utf8_decode(str_replace("Ã ", "&agrave;",utf8_encode($fap->pointAAmeliorer)));
+
+										//if ($pf != "Pas de remarques particulières" && $pa != "Pas de remarques particulières"){
+										?>
+
+
+										<?php
+											if ($lastobj != $fap->nomObjectif){
+												$aInserer = "<tr><td><?=$fap->nomObjectif?></td><td><?=$pf?></td><td><?=$pa?></td></tr>";
+											}else{
+												$aInserer = "<tr><td></td><td><?=$pf?></td><td><?=$pa?></td></tr>";
+											}
+											$lastobj = $fap->nomObjectif;
+										?>
+
+										<script>
+											$("#tableau<?=$stage->_id.'_'.$fonction->_id?>").append("<?=$aInserer?>");
+										</script>
+									<?php 
+										//}
+									} */?>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+
+

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+		<title>Création bilan faps</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<link rel="stylesheet" href="../css/global.css"/>
+		<link rel="stylesheet" href="../css/forms.css"/>
+		<link rel="stylesheet" href="../css/projetGestionFAP.css"/>
+		<link rel="stylesheet" href="../css/content-boxes.css"/>
+		<script type="text/javascript" src="../js/jquery-1.10.2.js"></script>
+		<script type="text/javascript" src="../js/box-0.7.0.js"></script>
+		<script type="text/javascript" src="../js/l10n.js"></script>
+		<script type="text/javascript" src="../js/global-forms.js"></script>
+		<script type="text/javascript" src="../js/global-content-boxes.js"></script>
+		<script type="text/javascript" src="../js/jquery.min.js"></script>
+		<script type="text/javascript" src="../js/jquery-ui.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="../css/jquery-ui.css"/>
+	</head>
+	<body>	
+		<?php include 'menu_tpl.html'; ?>
+
+		 <!-- Page de création stagiaire -->
+
+		<div class="two-columns forms">
+			<div class="element">
+				<div class="form-standard">
+					<div class="push-shadow bright-blue">
+						<div class="box-content">
+							<h2 class="title4">Bilan des faps</h2>
+							<div class="element">
+								<div class="form-standard">
+									<div class="box-form-content">
+										<form action="resume_final.php" target="_blank" id="form" method="post">
+											<fieldset>
+												 <!-- Champs à compléter -->
+												
+												<div class="field-wrapper">
+													<b>Date de début du stage : </b>
+													<?php if (isset($_COOKIE['dateDebutFilterResume'])){?>
+													<input required="true" type="text" name="dateDebut" id="dateD" value="<?=$_COOKIE['dateDebutFilterResume'] ? $_COOKIE['dateDebutFilterResume']: ''?>"/>
+													<?php } else { ?>
+													<input required="true" type="text" name="dateDebut" id="dateD" value=""/>
+													<?php } ?>
+													<div style="float:right;">
+														<b>Date de fin du stage :</b>
+														<?php if (isset($_COOKIE['dateFinFilterResume'])){?>
+														<input required="true" type="text" name="dateFin" id="dateF" value="<?=$_COOKIE['dateFinFilterResume'] ? $_COOKIE['dateFinFilterResume']: ''?>"/>
+														<?php } else { ?>
+														<input required="true" type="text" name="dateFin" id="dateF" value=""/>
+														<?php } ?>
+													</div>
+
+													<br style="clear: both;"><br>
+													<b>Filtre par stage : </b>
+													<select required="true" class="filtre" name="stageFiltre" id="span1-country3">
+														<?php if (isset($_COOKIE['stageFiltreFilterResume']) && $_COOKIE['stageFiltreFilterResume'] !=0){
+														$saveStage = new stage($_COOKIE['stageFiltreFilterResume']);
+														?>
+														<option value="<?=$_COOKIE['stageFiltreFilterResume']?>"><?=$saveStage->_titre ? $saveStage->_titre : 'Tous'?></option>
+														<?php } ?>
+														<option value="0">Tous</option>
+														<?php foreach ($stages as $stage) {?>
+														<option value="<?=$stage->_id?>"><?=$stage->_titre?></option>
+														<?php } ?>
+													</select>
+
+													<br style="clear: both;">
+													<b>Filtre par fonction : </b>
+													<select required="true" class="filtre" name="fonctionFiltre" id="span1-country4">
+														<?php if (isset($_COOKIE['fonctionFiltreFilterResume']) && $_COOKIE['fonctionFiltreFilterResume'] !=0){
+														$fonctionSave = new Fonction($_COOKIE['fonctionFiltreFilterResume']);
+														?>
+														<option value="<?=$fonctionSave->_id?>"><?=$fonctionSave->_nom?></option>
+														<?php } ?>
+														<option value="0">Toutes</option>
+														<?php foreach ($fonctions as $fonction) {?>
+														<option value="<?=$fonction->_id?>"><?=$fonction->_nom?></option>
+														<?php } ?>
+													</select>
+												</div>
+												<br/>
+
+												
+
+												<div class="form-buttons">
+													
+													<!-- Bouton hidden pour la vérification des champs-->
+													
+													<div class="actions">
+														<input type="hidden" placeholder="" class="filtre" name="verification" id="verification"/>			
+														<!-- Bouton pour envoyer les informations-->
+														<input type="submit" id="ajouter" value="Valider" style="width:250px" onclick="setTimeout(function(){ window.location.reload() }, 3000);"/>
+													</div>
+												</div>
+											</fieldset>
+
+											<script>
+												jQuery(document).ready(function($){
+													$.datepicker.regional['fr'] = {
+												    closeText: 'Fermer',
+												    prevText: 'Précédent',
+												    nextText: 'Suivant',
+												    currentText: 'Aujourd\'hui',
+												    monthNames: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
+												    monthNamesShort: ['Janv.','Févr.','Mars','Avril','Mai','Juin','Juil.','Août','Sept.','Oct.','Nov.','Déc.'],
+												    dayNames: ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'],
+												    dayNamesShort: ['Dim.','Lun.','Mar.','Mer.','Jeu.','Ven.','Sam.'],
+												    dayNamesMin: ['D','L','M','M','J','V','S'],
+												    weekHeader: 'Sem.',
+												    dateFormat: 'dd/mm/yy',
+												    firstDay: 1,
+												    isRTL: false,
+												    showMonthAfterYear: false,
+												    yearSuffix: ''
+												};
+												$.datepicker.setDefaults($.datepicker.regional['fr']);
+												    $("#dateD").datepicker({dateFormat : "dd/mm/yy"});
+													$("#dateF").datepicker({dateFormat : "dd/mm/yy"});
+												});
+											</script>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+
+

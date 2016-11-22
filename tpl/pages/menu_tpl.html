@@ -1,0 +1,41 @@
+<?php include_once '../classes/request.class.php'; ?>
+<?php $requestPending = Request::getAllPendingCount($_SESSION["site"]); ?>
+
+<!-- Elements du header -->
+<div class="header">
+	<div class="header-content">
+		<div class="logo">
+   			<a href="/route/stagiaires.php"><img style="height:60px;" src="../img/iFAP.png" alt=""></a>
+		</div>
+		<div class="header-infos">
+   			<span class="page-title">Gestion des fiches d'aide à la progression</span>
+		    <a href="#"><?php echo $_SESSION["nom2"]; ?> (<?=$_SESSION["nomRang"]?>)</a>
+		    <?php if ($_SESSION['rang'] >= Rangs::ADMINSITE){ ?>
+		    <a href="admin.php" class="disconnect">Panel admin (<?=$requestPending?>)</a>
+		    <?php } ?>
+		    <a href="connexion.php" class="disconnect">Deconnexion</a>
+		</div>
+	</div>
+</div>
+<!-- Gestion des onglets -->
+<div class="nav">
+   	<div class="main-nav">
+		<ul>
+			<?php if ($_SESSION['rang'] >= Rangs::MANAGER1){ ?>
+			<li class="<?php echo ($_SERVER['PHP_SELF'] == '/route/stagiaires.php') ? 'selected' : ''; ?>"><a href="stagiaires.php">Liste des stagiaires</a></li>
+			<?php } ?>
+			<?php if ($_SESSION['rang'] >= Rangs::FORMATEUR){ ?>
+			<li class="<?php echo ($_SERVER['PHP_SELF'] == '/route/stages.php') ? 'selected' : ''; ?>"><a href="stages.php">Liste des stages</a></li>
+			<li class="<?php echo ($_SERVER['PHP_SELF'] == '/route/fap.php') ? 'selected' : ''; ?>"><a href="fap.php">Imprimer des FAP</a></li>
+			<li class="<?php echo ($_SERVER['PHP_SELF'] == '/route/creerStagiaire.php') ? 'selected' : ''; ?>"><a href="creerStagiaire.php">Ajouter un stagiaire</a></li>
+			<li class="<?php echo ($_SERVER['PHP_SELF'] == '/route/resume.php') ? 'selected' : ''; ?>"><a href="../route/resume.php">Faire un bilan</a></li>
+			<?php } ?>
+		</ul>
+    </div>
+</div>
+
+<?php 
+if (isset($_GET['permission_denied'])){
+	echo "<script>alert('Vous n\'avez pas la permission de voir ce contenu');</script>";
+}
+?>
